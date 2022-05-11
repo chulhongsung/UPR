@@ -14,7 +14,7 @@ def linear_spline(alpha, gamma, beta, delta):
     return z
 
 def upr(z, gamma, beta, delta, quantile_dl):
-    mask = z >= quantile_dl # l0를 찾기위한 mask
+    mask = z >= quantile_dl
         
     bl = tf.squeeze(tf.concat([tf.constant(beta[:, 0], shape=(1,))[:, tf.newaxis], (beta[:,1:] - beta[:,:-1])], axis=1))
 
