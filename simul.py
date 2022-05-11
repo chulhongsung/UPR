@@ -119,38 +119,31 @@ def visualize_rvs_quantile(dist_type, gamma, beta):
     knots = [0.001, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 0.99]
     
     if dist_type == 'ex':
-        #sample = tf.constant(expon.rvs(loc=0, scale=0.5, size=size, random_state=seed), dtype=tf.float32)
         true_quantiles = expon.ppf(knots, loc=0, scale=0.5)
         
     elif dist_type == 'chi':
-        #sample =  tf.constant(chi2.rvs(2, size=size, random_state=seed), dtype=tf.float32)
         true_quantiles = chi2.ppf(knots, 2)
     
     elif dist_type == 'tn':
-        #sample = tf.constant(truncnorm.rvs(a=-2.5, b=0.5, loc=2.5, scale=1, size=size, random_state=seed), dtype=tf.float32)
         true_quantiles = truncnorm.ppf(knots, a=-2.5, b=0.5, loc=2.5, scale=1)
     
     elif dist_type == 'gev1':
         true_quantiles = genextreme.ppf(knots, loc=2, c=-0.3)
     
     else:
-        #sample = tf.constant(genextreme.rvs(loc=2, c=-0.5, size=size, random_state=seed), dtype=tf.float32)
         true_quantiles = genextreme.ppf(knots, loc=2, c=0.5)
     
     mpl.style.use('seaborn')
     delta = tf.constant(np.append(np.append([0.0, 0.05, 0.05], np.repeat(1, 8)/10), [0.05, 0.05, 0.0]), dtype=tf.dtypes.float32)
     quantile_ = np.linspace(0.01, 1, 100, dtype=np.float32)
     estimated_return = tf.squeeze(tf.map_fn(lambda x: linear_spline(x, gamma, beta, delta), tf.constant(quantile_)))
-    # empirical_quantile = np.quantile(sample, [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1])
     
     plt.plot(np.array([0.001, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 0.99], dtype=np.float32),
              true_quantiles, 'b-', lw=3, label='True Quantiles')
-    # plt.plot([0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1], empirical_quantile, 'k.', ms=10, label='Empirical quantiles')
     plt.plot(np.linspace(0.0, 1, 100, dtype=np.float32), estimated_return.numpy(), 'r--', lw=3, label='Estimated Quantiles')
     plt.xlabel("Quantiles", fontsize=16)
     plt.ylabel("X", fontsize=16)
     plt.legend(fontsize=16)
-    # plt.title("Estimated Quantile")
     plt.show()
     
 def mvn_simul(seed, epoch, var_a, var_b, var_c, corr_ab, corr_ac, corr_bc, p=3):
