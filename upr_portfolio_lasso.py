@@ -60,7 +60,7 @@ while (240+60*(i-1)) <= N:
     
     beta = tf.Variable(np.array(param_init.iloc[i-1, 1:], dtype=np.float32)[tf.newaxis,:])
 
-    delta = tf.constant(np.append(np.append([0.0, 0.025, 0.025, 0.025, 0.025], np.repeat(1, 8)/10), [0.025, 0.025, 0.025, 0.025]), dtype=tf.dtypes.float32)
+    delta = tf.constant(np.append([0.0], np.repeat(1, 10)/10), dtype=tf.dtypes.float32)
     
     gamma = tf.Variable(tf.constant(np.array(param_init.iloc[i-1, 0]), dtype=tf.dtypes.float32))
     
